@@ -110,6 +110,12 @@ public class CoordSysConverter {
         return result;
     }
     
+    public static Vector3f invertVector(Vector3f vec)
+    {
+        Vector3f result = new Vector3f(-vec.x, -vec.y, -vec.z);
+        return result;
+    }
+    
     public static String formatVector(Vector vec)
     {
         String result;
@@ -120,30 +126,52 @@ public class CoordSysConverter {
         return result;
     }
     
+    //Basic vector arithmetic functions
     public static Vector addVector(Vector v1, Vector v2)
     {
         Vector result = new Vector(v1.getX() + v2.getX(), v1.getY() + v2.getY(), v1.getZ() + v2.getZ());
         return result;
     }
     
+    public static Vector3f addVector(Vector3f v1, Vector3f v2)
+    {
+        Vector3f result = new Vector3f(v1.getX() + v2.getX(), v1.getY() + v2.getY(), v1.getZ() + v2.getZ());
+        return result;
+    }
+    
     public static Vector subVector(Vector v1, Vector v2)
     {
         Vector result = new Vector(v1.getX() - v2.getX(), v1.getY() - v2.getY(), v1.getZ() - v2.getZ());
-        
+        return result;
+    }
+    
+    public static Vector3f subVector(Vector3f v1, Vector3f v2)
+    {
+        Vector3f result = new Vector3f(v1.getX() - v2.getX(), v1.getY() - v2.getY(), v1.getZ() - v2.getZ());
         return result;
     }
     
     public static Vector multVector(Vector v1, float val)
     {
         Vector result = new Vector(v1.getX()*val, v1.getY()*val, v1.getZ()*val);
-        
+        return result;
+    }
+    
+    public static Vector3f multVector(Vector3f v1, float val)
+    {
+        Vector3f result = new Vector3f(v1.getX()*val, v1.getY()*val, v1.getZ()*val);
         return result;
     }
     
     public static Vector divVector(Vector v1, float val)
     {
         Vector result = new Vector(v1.getX()/val, v1.getY()/val, v1.getZ()/val);
-        
+        return result;
+    }
+    
+    public static Vector3f divVector(Vector3f v1, float val)
+    {
+        Vector3f result = new Vector3f(v1.getX()/val, v1.getY()/val, v1.getZ()/val);
         return result;
     }
     

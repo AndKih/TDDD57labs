@@ -23,6 +23,7 @@ public class Main extends SimpleApplication {
     private Geometry geom;
     private boolean firstFrame = true;
     private long lastID = 0;
+    private Vector3f pathToOrigin = new Vector3f();
     
     public static void main(String[] args) {
         isRunning = true;
@@ -66,8 +67,23 @@ public class Main extends SimpleApplication {
     @Override
     public void simpleUpdate(float tpf) {
         if(controller.isConnected() && !firstFrame)
-            getFrameAndPrint();
-        else
+        {
+            Frame frame = controller.frame();
+            if(frame.equals(controller.frame((int)(lastID))))
+            {
+                geom.move(pathToOrigin);
+//                System.out.println("Current position: " + );
+//                System.out.println("pathToOrigin: " + pathToOrigin.toString());
+                pathToOrigin = new Vector3f(Vector3f.ZERO);
+                lastID = 0;
+            }
+            else
+            {
+                lastID = frame.id();
+                getFrameAndPrint(frame);
+            }
+        }
+        else if(firstFrame)
         {
             setFirstPosition();
             firstFrame = false;
@@ -80,13 +96,9 @@ public class Main extends SimpleApplication {
         //TODO: add render code
     }
     
-    private void getFrameAndPrint()
-    {
-        Frame frame = controller.frame();
-        if(lastID == frame.id())
-            return;
+    private void getFrameAndPrint(Frame frame)
+    {  
         Vector curHandPos = new Vector();
-        lastID = frame.id();
         String id = " Frame ID: " + Long.toString(frame.id()), timestamp = "Frame Timestamp: " + Long.toString(frame.timestamp());
         String hands = "Frame Hands: " + Long.toString(frame.hands().count()), fingers = "Frame Fingers: " + Long.toString(frame.fingers().count());
         HUDelements.get(0).setText("INFO: " + id + "; " + timestamp + "; " + 
@@ -148,6 +160,7 @@ public class Main extends SimpleApplication {
         Hand lastHand = lastHands.get(0);
         lastHandPos = lastHand.palmPosition();
         Vector3f moveByThis = getMoveAmount(CoordSysConverter.leapToLocal(curHandPos), CoordSysConverter.leapToLocal(lastHandPos));
+        pathToOrigin = CoordSysConverter.subVector(pathToOrigin, moveByThis);
         geom.move(moveByThis);
     }
     
@@ -157,6 +170,7 @@ public class Main extends SimpleApplication {
         HandList list = firstFrame.hands();
         Hand hand = list.get(0);
         geom.move(CoordSysConverter.leapVecToJMEVec(hand.palmPosition()));
+        pathToOrigin = CoordSysConverter.invertVector(CoordSysConverter.leapVecToJMEVec(CoordSysConverter.leapToLocal(hand.palmPosition())));
     }
     
     private Vector3f getMoveAmount(Vector now, Vector last)
